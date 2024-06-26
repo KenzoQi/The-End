@@ -1,21 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGraduationCap, faChartLine, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { faGraduationCap, faRightToBracket, faBook } from '@fortawesome/free-solid-svg-icons';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
+import Modal from 'react-modal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+
+const courses = [
+  {
+    id: 1,
+    title: "Information Technology",
+    image: "https://i0.wp.com/www.gniotgroup.edu.in/blog/wp-content/uploads/2024/04/Information-Technology-1-1024x462-1.webp?resize=640%2C289&ssl=1",
+    description: "Information Technology (IT) is a field that encompasses the use of computers, networks, software, and other technology to manage and process information.",
+    details: "It focuses on the practical application of technology to support various sectors such as business, healthcare, education, government, and more."
+  },
+  {
+    id: 2,
+    title: "Engineering",
+    image: "https://cdn.shopify.com/s/files/1/0306/6419/6141/articles/Untitled_design.png?v=1657832281",
+    description: "Engineering is a discipline that applies scientific principles and mathematical methods to design, develop, and analyze technological solutions to practical problems.",
+    details: "It encompasses a wide range of specialized fields and plays a crucial role in shaping the modern world."
+  },
+  {
+    id: 3,
+    title: "Nursing",
+    image: "https://cdn.britannica.com/18/192118-050-4A517482/nurse-doctor-hospital-patient-MRI.jpg",
+    description: "Nursing is a healthcare profession dedicated to caring for individuals, families, and communities to achieve and maintain optimal health and well-being.",
+    details: "Nurses play a critical role in patient care, health education, and advocacy within the healthcare system."
+  },
+  {
+    id: 4,
+    title: "Architecture",
+    image: "https://barker-associates.b-cdn.net/wp-content/uploads/2022/02/Architecture-and-Design-.jpg.webp",
+    description: "Architecture is the art and science of designing and constructing buildings.",
+    details: "Architects create plans and designs for structures that are both functional and aesthetically pleasing."
+  },
+  {
+    id: 5,
+    title: "Computer Science",
+    image: "https://www.mtu.edu/cs/what/images/what-is-computer-science-banner1600.jpg",
+    description: "Computer Science is the study of computers and computational systems.",
+    details: "It involves the understanding of software, algorithms, programming languages, and the hardware of computers."
+  },
+];
 
 const Dashboard = ({ auth }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
+  const [showCourses, setShowCourses] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
   const [editEnrollment, setEditEnrollment] = useState(null);
-  const [viewingStatistics, setViewingStatistics] = useState(false);
-  const [studentsActive, setStudentsActive] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const fetchEnrollments = async () => {
     try {
@@ -30,45 +67,19 @@ const Dashboard = ({ auth }) => {
     fetchEnrollments();
   }, []);
 
-  const navigateToEnrollment = () => {
-    window.location.href = '/dashboard/enrollment';
-  };
+  const navigateTo = (url) => window.location.href = url;
 
-  const navigateToReview = () => {
-    window.location.href = '/dashboard/enrollment/review';
-  };
-
-  const navigateToEnrollmentStatus = () => {
-    window.location.href = '/status';
-  };
-
-  const navigateToStatistics = () => {
-    window.location.href = '/dashboard/statistics';
-    setViewingStatistics(true);
-  };
-
-  const navigateToStaffDashboard = () => {
-    window.location.href = '/staffdashboard';
-    setStudentsActive(true);
-  };
-
-  const handleEditClick = (enrollment) => {
-    setEditEnrollment(enrollment);
-  };
+  const handleEditClick = (enrollment) => setEditEnrollment(enrollment);
 
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
-    setEditEnrollment({
-      ...editEnrollment,
-      [name]: value,
-    });
+    setEditEnrollment((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.put(`/api/enrollment-forms/${editEnrollment.id}`, editEnrollment);
+      await axios.put(`/api/enrollment-forms/${editEnrollment.id}`, editEnrollment);
       alert('Enrollment data updated successfully');
       fetchEnrollments();
       setEditEnrollment(null);
@@ -89,33 +100,43 @@ const Dashboard = ({ auth }) => {
     }
   };
 
+  const handleGeneratePDF = async () => {
+    try {
+      const response = await axios.get('/generate-pdf', {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'users-lists.pdf');
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+
+  const handleCourseClick = (course) => setSelectedCourse(course);
+
+  const closeModal = () => setSelectedCourse(null);
+
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Dashboard" />
 
-      <div className="flex" style={{ backgroundImage: "url('https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/canvas/2024/03/11/4cdb4fbc-c448-4af5-bb6e-ffdf677548c6_e1a83bec.jpg?itok=4Pa3Dk7Q&v=1710134844')", backgroundSize: 'cover', backgroundPosition: 'center', }}>
+      <div className="flex" style={{ backgroundImage: "url('https://cdn.i-scmp.com/sites/default/files/styles/1200x800/public/d8/images/canvas/2024/03/11/4cdb4fbc-c448-4af5-bb6e-ffdf677548c6_e1a83bec.jpg?itok=4Pa3Dk7Q&v=1710134844')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className={`w-64 bg-green-700 min-h-screen text-white transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
           <div className="sticky top-0 p-6">
             <h2 className="text-2xl font-semibold mb-4">Navigation</h2>
             <nav>
               <ul>
-                <li className="mb-2">
-                  <button
-                    className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'Statistics' ? 'bg-green-900' : ''}`}
-                    onClick={() => {
-                      setActiveItem('Statistics');
-                      navigateToStatistics();
-                    }}
-                  >
-  
-                  </button>
-                </li>
+
                 <li className="mb-2">
                   <button
                     className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'EnrollmentProcess' ? 'bg-green-900' : ''}`}
                     onClick={() => {
                       setActiveItem('EnrollmentProcess');
-                      navigateToEnrollment();
+                      navigateTo('/dashboard/enrollment');
                     }}
                   >
                     <FontAwesomeIcon icon={faRightToBracket} className="mr-2" />
@@ -127,7 +148,7 @@ const Dashboard = ({ auth }) => {
                     className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'EnrollmentReview' ? 'bg-green-900' : ''}`}
                     onClick={() => {
                       setActiveItem('EnrollmentReview');
-                      navigateToReview();
+                      navigateTo('/dashboard/enrollment/review');
                     }}
                   >
                     <FontAwesomeIcon icon={faRightToBracket} className="mr-2" />
@@ -139,7 +160,7 @@ const Dashboard = ({ auth }) => {
                     className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'EnrollmentStatus' ? 'bg-green-900' : ''}`}
                     onClick={() => {
                       setActiveItem('EnrollmentStatus');
-                      navigateToEnrollmentStatus();
+                      navigateTo('/status');
                     }}
                   >
                     <FontAwesomeIcon icon={faRightToBracket} className="mr-2" />
@@ -148,11 +169,14 @@ const Dashboard = ({ auth }) => {
                 </li>
                 <li className="mb-2">
                   <button
-                    className={` flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left  ${studentsActive ? 'bg-green-900' : ''}`}
-                    onClick={navigateToStaffDashboard}
+                    className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'Courses' ? 'bg-green-900' : ''}`}
+                    onClick={() => {
+                      setActiveItem('Courses');
+                      setShowCourses(!showCourses);
+                    }}
                   >
-                    <FontAwesomeIcon icon={faGraduationCap} className="mr-2" />
-                    Students
+                    <FontAwesomeIcon icon={faBook} className="mr-2" />
+                    Courses
                   </button>
                 </li>
               </ul>
@@ -160,123 +184,89 @@ const Dashboard = ({ auth }) => {
           </div>
         </div>
 
-        <div className="flex-1 md:ml-64 p-6">
+        <div className="flex-1 md:ml-64 p-6" style={{ paddingLeft: '2rem' }}>
           <button
             className="block md:hidden text-gray-800 hover:text-gray-600 focus:outline-none mb-4"
             onClick={toggleSidebar}
           >
-            {isSidebarOpen ? 'Hide Sidebar' : 'Show Sidebar'}
+            {isSidebarOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
           </button>
 
-          <div className="flex justify-between mb-4">
-            <h2 className="font-semibold text-xl text-gray-800 leading-tight hidden">Dashboard</h2>
-            <div className="text-sm text-gray-600 hidden">Current Session: 2024</div>
-          </div>
-
-          <div>
-            <h1 className="text-lg font-semibold mb-2 hidden">Thank You For Logging In</h1>
-            <ul className="divide-y divide-gray-200">
-              {enrollments.length === 0 ? (
-                <div className="text-center">
-                  <img
-                    src="https://www.shutterstock.com/image-photo/having-best-time-friends-top-600nw-494939341.jpg"
-                    alt="No enrollments available"
-                    className="img-fluid hidden"
-                  />
-                </div>
-              ) : (
-                enrollments.map((enrollment, index) => (
-                  <li key={index} className="py-2">
-                    <div>
-                      <p className="text-lg font-medium text-gray-800">Term: {enrollment.term}</p>
-                      <p className="text-sm text-gray-500">Application Type: {enrollment.applicationType}</p>
-                      <p className="text-sm text-gray-500">Academic Program: {enrollment.course}</p>
-                      <p className="text-sm text-gray-500">Department: {enrollment.department}</p>
-                      <p className="text-sm text-gray-500">Year: {enrollment.year}</p>
-                      <button
-                        className="text-blue-500 hover:underline"
-                        onClick={() => handleEditClick(enrollment)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="text-red-500 hover:underline ml-4"
-                        onClick={() => handleDelete(enrollment.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
-
-          {editEnrollment && (
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2">Edit Enrollment Form</h3>
-              <form onSubmit={handleUpdateSubmit}>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Academic Year & Term</label>
-                  <input
-                    type="text"
-                    name="term"
-                    value={editEnrollment.term}
-                    onChange={handleUpdateChange}
-                    className="block w-full mt-1 border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Application Type</label>
-                  <input
-                    type="text"
-                    name="applicationType"
-                    value={editEnrollment.applicationType}
-                    onChange={handleUpdateChange}
-                    className="block w-full mt-1 border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">First Choice Academic Program</label>
-                  <input
-                    type="text"
-                    name="course"
-                    value={editEnrollment.course}
-                    onChange={handleUpdateChange}
-                    className="block w-full mt-1 border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Department</label>
-                  <input
-                    type="text"
-                    name="department"
-                    value={editEnrollment.department}
-                    onChange={handleUpdateChange}
-                    className="block w-full mt-1 border-gray-300 rounded-md"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Year</label>
-                  <input
-                    type="text"
-                    name="year"
-                    value={editEnrollment.year}
-                    onChange={handleUpdateChange}
-                    className="block w-full mt-1 border-gray-300 rounded-md"
-                  />
-                </div>
-                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">Update</button>
-                <button
-                  type="button"
-                  className="ml-4 px-4 py-2 bg-gray-500 text-white rounded-md"
-                  onClick={() => setEditEnrollment(null)}
-                >
-                  Cancel
-                </button>
-              </form>
+          {activeItem === 'EnrollmentProcess' && (
+            <div>
+              <h1 className="text-3xl font-semibold mb-4 text-white">Enrollment Process</h1>
+              <p className="text-lg text-white">This is the enrollment process section...</p>
             </div>
           )}
+
+          {activeItem === 'EnrollmentReview' && (
+            <div>
+              <h1 className="text-3xl font-semibold mb-4 text-white">Enrollment Review</h1>
+              <p className="text-lg text-white">This is the enrollment review section...</p>
+            </div>
+          )}
+
+          {activeItem === 'EnrollmentStatus' && (
+            <div>
+              <h1 className="text-3xl font-semibold mb-4 text-white">Enrollment Status</h1>
+              <p className="text-lg text-white">This is the enrollment status section...</p>
+            </div>
+          )}
+
+          {showCourses && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  className="bg-green-700 text-white p-4 rounded-lg shadow-md cursor-pointer"
+                  onClick={() => handleCourseClick(course)}
+                >
+                  <img src={course.image} alt={course.title} className="w-full h-40 object-cover rounded-t-lg" />
+                  <div className="p-4">
+                    <h2 className="text-xl font-semibold mb-2">{course.title}</h2>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {activeItem === 'Statistics' && (
+            <div>
+              <h1 className="text-3xl font-semibold mb-4 text-white">Welcome, {auth.user.name}</h1>
+              <p className="text-lg text-white">Here are your latest statistics...</p>
+            </div>
+          )}
+
+          <Modal
+            isOpen={!!selectedCourse}
+            onRequestClose={closeModal}
+            contentLabel="Course Details"
+            className="fixed inset-0 flex items-center justify-center z-50 p-4"
+            overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
+          >
+            {selectedCourse && (
+              <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h2 className="text-2xl font-semibold mb-4">{selectedCourse.title}</h2>
+                <img src={selectedCourse.image} alt={selectedCourse.title} className="w-full h-40 object-cover rounded-t-lg mb-4" />
+                <p className="mb-4">{selectedCourse.description}</p>
+                <p>{selectedCourse.details}</p>
+                <button
+                  className="mt-4 text-red-500 hover:underline"
+                  onClick={closeModal}
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </Modal>
         </div>
       </div>
     </AuthenticatedLayout>

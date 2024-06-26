@@ -175,11 +175,24 @@ const StaffDashboard = () => {
 
     return (
         <AuthenticatedLayout>
+                <div 
+                    className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center"
+                    style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1562774053-701939374585?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29sbGVnZXxlbnwwfHwwfHx8MA%3D%3D)' }}
+                    >
+                      <div className="w-full max-w-7xl mx-auto p-8 bg-white bg-opacity-90 rounded-lg shadow-lg font-sans">
             <div className="p-6">
                 <h1 className="text-3xl font-bold mb-4">Staff Dashboard</h1>
                 {errors.access && <div className="text-red-600 font-bold mt-4">{errors.access}</div>}
                 {message && <div className="text-green-600 font-bold mt-4">{message}</div>}
-
+                        <button
+                            type="button"
+                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                            onClick={() => {
+                                window.history.back();
+                            }}
+                        >
+                            Back
+                        </button>
                 <div className="mt-6">
                     <h2 className="text-xl font-semibold mb-4">Filters</h2>
                     <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
@@ -389,6 +402,8 @@ const StaffDashboard = () => {
                 ) : (
                     <p className="mt-6 text-gray-600">No enrollments found.</p>
                 )}
+              </div>
+             </div>
             </div>
 
             {editId && (
@@ -397,7 +412,7 @@ const StaffDashboard = () => {
                         <h2 className="text-2xl font-semibold mb-4">Edit Enrollment</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex flex-col">
+                                <div className="hidden flex-col">
                                     <label htmlFor="term" className="block text-sm font-medium text-gray-700">
                                         Term
                                     </label>
@@ -409,7 +424,7 @@ const StaffDashboard = () => {
                                         className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
-                                <div className="flex flex-col">
+                                <div className="hidden flex-col">
                                     <label htmlFor="application_type" className="block text-sm font-medium text-gray-700">
                                         Application Type
                                     </label>
@@ -424,7 +439,7 @@ const StaffDashboard = () => {
                                         <option value="returning">Returning</option>
                                     </select>
                                 </div>
-                                <div className="flex flex-col">
+                                <div className="hidden flex-col">
                                     <label htmlFor="department" className="block text-sm font-medium text-gray-700">
                                         Department
                                     </label>
@@ -439,7 +454,7 @@ const StaffDashboard = () => {
                                         <option value="CON">CON</option>
                                     </select>
                                 </div>
-                                <div className="flex flex-col">
+                                <div className="hidden flex-col">
                                     <label htmlFor="course" className="block text-sm font-medium text-gray-700">
                                         Course
                                     </label>
@@ -456,7 +471,7 @@ const StaffDashboard = () => {
                                     ))}
                                 </select>
                                 </div>
-                                <div className="flex flex-col">
+                                <div className="hidden flex-col">
                                     <label htmlFor="year" className="block text-sm font-medium text-gray-700">
                                         Year
                                     </label>

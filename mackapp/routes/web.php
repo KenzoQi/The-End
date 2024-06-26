@@ -11,6 +11,8 @@ use App\Http\Controllers\PaymentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\PDFController;
+
 
 // Define the route for the welcome page
 Route::get('/', function () {
@@ -53,8 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Define the route for retrieving payment
-
+//For Printing
+Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
 
 // Define the route for the enrollment page
 Route::get('/dashboard/enrollment', [EnrollmentController::class, 'index'])->name('enrollment.index');
@@ -76,6 +78,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/enroll', [EnrollmentController::class, 'showEnrollmentForm'])->name('enroll.form');
 });
+
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/enroll', [EnrollmentController::class, 'index'])->name('enrollment.index');
@@ -187,6 +191,9 @@ Route::get('/enrollments/not-saved', [FetchEnrollmentController::class, 'getNotS
 
 Route::post('/enrollments/{id}/save', [EnrollmentController::class, 'save']);
 
+use App\Http\Controllers\AdmissionController;
 
+Route::get('/admission', [AdmissionController::class, 'index'])->name('admission');
+Route::post('/check-duplicate', 'AdmissionController@checkDuplicate');
 
 

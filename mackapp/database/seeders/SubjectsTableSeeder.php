@@ -21,7 +21,7 @@ class SubjectsTableSeeder extends Seeder
             ['course' => 'Information Technology', 'year' => '1st year', 'subject_name' => 'Introduction to Data Science IT108', 'tuition_fee' => 650.00, 'professor' => 'Prof. Emily Blue', 'room' => 'Room 108'],
     
             // Information Technology - 2nd Year
-            ['course' => 'Information Technology', 'year' => '2nd year', 'subject_name' => 'Object-Oriented Programming IT201', 'tuition_fee' => 700.00, 'professor' => 'Dr. David Yellow', 'room' => 'Room 201'],
+            ['course' => 'Information Technology', 'year' => '2nd year', 'subject_name' => 'Object-Oriented Programming IT201', 'tuition_fee' => 550.00, 'professor' => 'Dr. David Yellow', 'room' => 'Room 201'],
             ['course' => 'Information Technology', 'year' => '2nd year', 'subject_name' => 'Data Structures and Algorithms IT202', 'tuition_fee' => 750.00, 'professor' => 'Prof. Laura Pink', 'room' => 'Room 202'],
             ['course' => 'Information Technology', 'year' => '2nd year', 'subject_name' => 'Software Engineering IT203', 'tuition_fee' => 720.00, 'professor' => 'Dr. George Gray', 'room' => 'Room 203'],
             ['course' => 'Information Technology', 'year' => '2nd year', 'subject_name' => 'Operating Systems IT204', 'tuition_fee' => 740.00, 'professor' => 'Prof. Nancy Silver', 'room' => 'Room 204'],
@@ -31,14 +31,14 @@ class SubjectsTableSeeder extends Seeder
             // Information Technology - 3rd Year
             ['course' => 'Information Technology', 'year' => '3rd year', 'subject_name' => 'Machine Learning IT301', 'tuition_fee' => 800.00, 'professor' => 'Dr. Daniel Copper', 'room' => 'Room 301'],
             ['course' => 'Information Technology', 'year' => '3rd year', 'subject_name' => 'Artificial Intelligence IT302', 'tuition_fee' => 820.00, 'professor' => 'Prof. Olivia Platinum', 'room' => 'Room 302'],
-            ['course' => 'Information Technology', 'year' => '3rd year', 'subject_name' => 'Cyber Security IT303', 'tuition_fee' => 840.00, 'professor' => 'Dr. Henry Iron', 'room' => 'Room 303'],
+            ['course' => 'Information Technology', 'year' => '3rd year', 'subject_name' => 'Cyber Security IT303', 'tuition_fee' => 990.00, 'professor' => 'Dr. Henry Iron', 'room' => 'Room 303'],
             ['course' => 'Information Technology', 'year' => '3rd year', 'subject_name' => 'Cloud Computing IT304', 'tuition_fee' => 830.00, 'professor' => 'Prof. Sophia Tin', 'room' => 'Room 304'],
             ['course' => 'Information Technology', 'year' => '3rd year', 'subject_name' => 'Internet of Things IT305', 'tuition_fee' => 810.00, 'professor' => 'Dr. Thomas Steel', 'room' => 'Room 305'],
             ['course' => 'Information Technology', 'year' => '3rd year', 'subject_name' => 'Data Analytics IT306', 'tuition_fee' => 850.00, 'professor' => 'Prof. Mia Nickel', 'room' => 'Room 306'],
             ['course' => 'Information Technology', 'year' => '3rd year', 'subject_name' => 'Big Data Technologies IT307', 'tuition_fee' => 860.00, 'professor' => 'Dr. James Lead', 'room' => 'Room 307'],
     
             // Information Technology - 4th Year
-            ['course' => 'Information Technology', 'year' => '4th year', 'subject_name' => 'Advanced Database Systems IT401', 'tuition_fee' => 900.00, 'professor' => 'Dr. Jessica Zinc', 'room' => 'Room 401'],
+            ['course' => 'Information Technology', 'year' => '4th year', 'subject_name' => 'Advanced Database Systems IT401', 'tuition_fee' => 990.00, 'professor' => 'Dr. Jessica Zinc', 'room' => 'Room 401'],
             ['course' => 'Information Technology', 'year' => '4th year', 'subject_name' => 'Blockchain Technology IT402', 'tuition_fee' => 920.00, 'professor' => 'Prof. Andrew Brass', 'room' => 'Room 402'],
             ['course' => 'Information Technology', 'year' => '4th year', 'subject_name' => 'Quantum Computing IT403', 'tuition_fee' => 940.00, 'professor' => 'Dr. Mary Iron', 'room' => 'Room 403'],
             ['course' => 'Information Technology', 'year' => '4th year', 'subject_name' => 'Natural Language Processing IT404', 'tuition_fee' => 950.00, 'professor' => 'Prof. Christopher Bronze', 'room' => 'Room 404'],
@@ -50,8 +50,8 @@ class SubjectsTableSeeder extends Seeder
             ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Anatomy and Physiology NUR101', 'tuition_fee' => 550.00, 'professor' => 'Dr. Alice Johnson', 'room' => 'Room 201'],
             ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Fundamentals of Nursing NUR102', 'tuition_fee' => 600.00, 'professor' => 'Prof. Bob Brown', 'room' => 'Room 202'],
             ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Nutrition and Dietetics NUR103', 'tuition_fee' => 580.00, 'professor' => 'Dr. Carol Smith', 'room' => 'Room 203'],
-            ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Biochemistry NUR104', 'tuition_fee' => 560.00, 'professor' => 'Prof. Daniel Green', 'room' => 'Room 204'],
-            ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Microbiology NUR105', 'tuition_fee' => 590.00, 'professor' => 'Dr. Emily Black', 'room' => 'Room 205'],
+            ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Biochemistry NUR104', 'tuition_fee' => 960.00, 'professor' => 'Prof. Daniel Green', 'room' => 'Room 204'],
+            ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Microbiology NUR105', 'tuition_fee' => 990.00, 'professor' => 'Dr. Emily Black', 'room' => 'Room 205'],
             ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Medical-Surgical Nursing NUR106', 'tuition_fee' => 620.00, 'professor' => 'Prof. Frank White', 'room' => 'Room 206'],
             ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Pharmacology NUR107', 'tuition_fee' => 610.00, 'professor' => 'Dr. Grace Blue', 'room' => 'Room 207'],
             ['course' => 'Nursing', 'year' => '1st year', 'subject_name' => 'Health Assessment NUR108', 'tuition_fee' => 600.00, 'professor' => 'Prof. Henry Red', 'room' => 'Room 208'],

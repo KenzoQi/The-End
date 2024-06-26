@@ -89,12 +89,26 @@ const AdminDashboard = () => {
 
     return (
         <AuthenticatedLayout>
+             <div 
+                className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center"
+                style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1562774053-701939374585?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29sbGVnZXxlbnwwfHwwfHx8MA%3D%3D)' }}
+            >
+            <div className="w-full max-w-7xl mx-auto p-8 bg-white bg-opacity-90 rounded-lg shadow-lg font-sans">
             <div className="p-6">
                 <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
                 {errors.access && <div className="text-red-600 font-bold mt-4">{errors.access}</div>}
                 {message && <div className="text-green-600 font-bold mt-4">{message}</div>}
 
                 <div className="mt-6">
+                <button
+                            type="button"
+                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                            onClick={() => {
+                                window.history.back();
+                            }}
+                        >
+                            Back
+                        </button>
                     <h2 className="text-xl font-semibold mb-4">Filters</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         <div className="flex flex-col">
@@ -250,19 +264,22 @@ const AdminDashboard = () => {
                                             <td className="px-4 py-2">{enrollment.last_name}</td>
                                             <td className="px-4 py-2">{enrollment.email}</td>
                                             <td className="px-4 py-2">
-                                                <button
-                                                    className="text-blue-500 hover:text-blue-700"
-                                                    onClick={() => handleEdit(enrollment)}
-                                                >
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    className="text-red-500 hover:text-red-700 ml-4"
-                                                    onClick={() => handleDelete(enrollment.id)}
-                                                >
-                                                    Delete
-                                                </button>
+                                                <div className="flex space-x-4">
+                                                    <button
+                                                        className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
+                                                        onClick={() => handleEdit(enrollment)}
+                                                    >
+                                                        Edit    
+                                                    </button>
+                                                    <button
+                                                        className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700"
+                                                        onClick={() => handleDelete(enrollment.id)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
                                             </td>
+
                                         </tr>
                                     ))}
                                 </tbody>
@@ -274,7 +291,9 @@ const AdminDashboard = () => {
                         <p>No enrollments found matching the criteria.</p>
                     </div>
                 )}
-            </div>
+              </div>
+             </div>
+             </div>
             {editId && (
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:max-w-lg">

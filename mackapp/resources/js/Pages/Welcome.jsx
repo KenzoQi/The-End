@@ -9,7 +9,8 @@ import MU4 from '/src/Img/MU4.jpg';
 const routes = {
     login: '/login', 
     register: '/register', 
-    dashboardEnrollment: '/dashboard/enrollment', 
+    dashboardEnrollment: '/dashboard/enrollment',
+    applyNow: '/admission' // New route for Apply Now button
 };
 
 export default function Welcome({ auth }) {
@@ -71,6 +72,13 @@ export default function Welcome({ auth }) {
                         Manage your enrollment process seamlessly with our intuitive system.
                     </p>
 
+                    <Link
+                        href={routes.applyNow}
+                        className="btn-secondary bg-blue-500 text-white font-semibold py-2 px-8 rounded-full shadow-lg hover:bg-blue-600 transition duration-300"
+                    >
+                        Apply Now
+                    </Link>
+
                 </div>
             </div>
 
@@ -120,3 +128,4 @@ export default function Welcome({ auth }) {
         </>
     );
 }
+
