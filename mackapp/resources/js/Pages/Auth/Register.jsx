@@ -12,7 +12,12 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        
     });
+    const routes = {
+        dashboardEnrollment: '/admission',
+    };
+    
 
     useEffect(() => {
         return () => {
@@ -22,7 +27,11 @@ export default function Register() {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('register'));
+        post(route('register'), {
+            onSuccess: () => {
+                window.location.href = routes.dashboardEnrollment;  // Redirect to enrollment page
+            }
+        });
     };
 
     return (
@@ -38,12 +47,14 @@ export default function Register() {
                 <img src="/MU%20logo.png" alt="Logo" className="h-20 w-20 transition-transform transform hover:scale-110" />
             </div>
 
+            <h2 className="text-2 font-bold mb-6 text-center">Admission and Future Enrollments will be tied to your account. </h2>
+
             <div className="bg-white shadow-lg rounded-lg p-8 max-w-md mx-auto w-full">
                 <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
 
                 <form onSubmit={submit}>
                     <div className="mb-4">
-                        <InputLabel htmlFor="name" value="Name" className="text-gray-700" />
+                        <InputLabel htmlFor="name" value=" First Name" className="text-gray-700" />
 
                         <TextInput
                             id="name"

@@ -1,325 +1,275 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 
 const Enrollment = ({ auth }) => {
-  const [formData, setFormData] = useState({
-    term: '2024-2025 - 1st Semester',
-    application_type: '', ///
-    year: '', ////NO
-    department: '', ////
-    course: '',
-    first_name: auth.user.name || '',
-    last_name: '',
-    date_of_birth: '',
-    nationality: '',
-    civil_status: '',
-    gender: '',
-    address: '',
-    province: '',
-    region: '',
-    barangay: '',
-    religion: '',
-    mobile_number: '',
-    email: auth.user.email || '',
-    status: 'Not Saved',
-    section: 'TBD',
-  });
+  const [enrollment, setEnrollment] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [step, setStep] = useState(1);
+  const [enrollments, setEnrollments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [subjects, setSubjects] = useState([]);
+  const [selectedEnrollmentId, setSelectedEnrollmentId] = useState(null);
+  const [totalTuition, setTotalTuition] = useState(0);
 
-  const departmentCourses = {
-    CITC: ['Computer Science', 'Information Technology'],
-    CEA: ['Engineering', 'Architecture'],
-    CON: ['Nursing'],
-    // Add more departments and their courses as needed
-  };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-      ...(name === 'department' && { course: '' }), // Reset course if department changes
-    });
-  };
 
-  const navigateToReview = () => {
-    window.location.href = '/dashboard/enrollment/review';
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    axios.post('/enroll', formData)
+  useEffect(() => {
+    axios.get('/user-enrollment')
       .then(response => {
-        console.log(response.data);
-        alert('Data saved successfully');
-        navigateToReview();
+        if (response.data.status === 'Accepted' && response.data.enrollmentstatus === 'Not Enrolled') {
+          setEnrollment(response.data.enrollment);
+        } else {
+          setStatus(response.data.status);
+          setMessage(response.data.message);
+        }
       })
       .catch(error => {
-        if (error.response) {
-          console.error('Error response:', error.response);
-          const errorMessages = error.response.data.errors 
-            ? Object.values(error.response.data.errors).flat().join(', ') 
-            : 'There was an error with the submission';
-          alert('There was an error saving the data: ' + errorMessages);
-        } else if (error.request) {
-          console.error('Error request:', error.request);
-          alert('No response received from the server');
-        } else {
-          console.error('Error message:', error.message);
-          alert('Error in request setup: ' + error.message);
-        }
+        setMessage(error.response ? error.response.data.message : 'Error fetching enrollment data');
       });
+  }, []);
+  
+
+  useEffect(() => {
+    axios.get('/enrollments')
+        .then(response => {
+            setEnrollments(response.data);
+            setLoading(false);
+        })
+        .catch(error => {
+            setError('There was an error fetching the enrollments.');
+            setLoading(false);
+        });
+}, []);
+
+
+const fetchSubjects = (enrollmentId) => {
+  axios.get(`/enrollments/${enrollmentId}/subjects`)
+      .then(response => {
+          const subjectsData = response.data.subjects;
+          setSubjects(subjectsData);
+          setSelectedEnrollmentId(enrollmentId);
+          const total = subjectsData.reduce((sum, subject) => sum + (parseFloat(subject.tuition_fee) || 0), 0);
+          setTotalTuition(total);
+      })
+      .catch(error => {
+          console.error(error);
+      });
+};
+
+const getStatusClass = (status) => {
+  switch (status) {
+      case 'Pending':
+          return 'text-orange-500';
+      case 'Not Saved':
+          return 'text-blue-500';
+      case 'Accepted':
+          return 'text-green-500';
+      case 'Rejected':
+          return 'text-red-500';
+      default:
+          return '';
+  }
+};
+
+const getSectionClass = (section) => {
+  switch (section) {
+      case 'TBD':
+          return 'text-orange-300';
+      default:
+          return '';
+  }
+};
+
+const saveEnrollment = () => {
+  if (window.confirm("Proceed with enrollment?")) {
+      axios.post(`/enrollments/${selectedEnrollmentId}/save`, { total_tuition: totalTuition })
+          .then(response => {
+              console.log(response.data.message);
+              window.location.href = '/dashboard/enrollment/review'; // Redirect after saving
+          })
+          .catch(error => {
+              console.error(error);
+          });
+  }
+};
+
+  const nextStep = () => {
+    setStep(prevStep => prevStep + 1);
+  };
+
+  const prevStep = () => {
+    setStep(prevStep => prevStep - 1);
+  };
+
+  const renderStepContent = (step) => {
+    switch (step) {
+      case 1:
+        return (
+          <div>
+            <div>
+              <label className="font-semibold">Term:</label>
+              <input 
+                type="text" 
+                value={enrollment.term} 
+                readOnly 
+                className="w-full border-gray-300 rounded-md shadow-sm mt-1"
+              />
+            </div>
+            <div>
+              <label className="font-semibold">Application Type:</label>
+              <input 
+                type="text" 
+                value={enrollment.application_type} 
+                readOnly 
+                className="w-full border-gray-300 rounded-md shadow-sm mt-1"
+              />
+            </div>
+            <div>
+              <label className="font-semibold">Year:</label>
+              <input 
+                type="text" 
+                value={enrollment.year} 
+                readOnly 
+                className="w-full border-gray-300 rounded-md shadow-sm mt-1"
+              />
+            </div>
+            <div>
+              <label className="font-semibold">Department:</label>
+              <input 
+                type="text" 
+                value={enrollment.department} 
+                readOnly 
+                className="w-full border-gray-300 rounded-md shadow-sm mt-1"
+              />
+            </div>
+            <div>
+              <label className="font-semibold">Course:</label>
+              <input 
+                type="text" 
+                value={enrollment.course} 
+                readOnly 
+                className="w-full border-gray-300 rounded-md shadow-sm mt-1"
+              />
+            </div>
+          </div>
+        );
+      case 2:
+        fetchSubjects(enrollment.id)
+        return (
+          <div>
+            <div className="w-full max-w-7xl mx-auto p-8 bg-white bg-opacity-90 rounded-lg shadow-lg font-sans">
+                    <div className="flex justify-between items-center mb-6">
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full bg-white border border-gray-200">
+                            <thead>
+                                <tr className="bg-gray-100">
+                                    <th className="py-3 px-4 border-b">First Name</th>
+                                    <th className="py-3 px-4 border-b">Last Name</th>
+                                    <th className="py-3 px-4 border-b">Email</th>
+                                    <th className="py-3 px-4 border-b">Department</th>
+                                    <th className="py-3 px-4 border-b">Course</th>
+                                    <th className="py-3 px-4 border-b">Term</th>
+                                    <th className="py-3 px-4 border-b">Year</th>
+                                    <th className="py-3 px-4 border-b">Status</th>
+                                    <th className="py-3 px-4 border-b">Section</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {enrollments.map((enrollment) => (
+                                    <tr key={enrollment.id} className="hover:bg-gray-50">
+                                        <td className="py-2 px-4 border-b">{enrollment.first_name}</td>
+                                        <td className="py-2 px-4 border-b">{enrollment.last_name}</td>
+                                        <td className="py-2 px-4 border-b">{enrollment.email}</td>
+                                        <td className="py-2 px-4 border-b">{enrollment.department}</td>
+                                        <td className="py-2 px-4 border-b">{enrollment.course}</td>
+                                        <td className="py-2 px-4 border-b">{enrollment.term}</td>
+                                        <td className="py-2 px-4 border-b">{enrollment.year}</td>
+                                        <td className={`py-2 px-4 border-b ${getStatusClass(enrollment.enrollmentstatus)}`}>{enrollment.enrollmentstatus}</td>
+                                        <td className={`py-2 px-4 border-b ${getSectionClass(enrollment.section)}`}>{enrollment.section}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {selectedEnrollmentId && (
+                            <div className="mt-8">
+                                <h2 className="text-xl font-bold mb-4">Subjects :</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {subjects.map(subject => (
+                                        <div key={subject.subject_name} className="bg-white p-4 rounded-lg shadow">
+                                            <h3 className="font-semibold text-lg mb-2">{subject.subject_name}</h3>
+                                            <p>Tuition Fee: ${parseFloat(subject.tuition_fee).toFixed(2)}</p>
+                                            <p>Professor: {subject.professor}</p>
+                                            <p>Room: {subject.room}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-6 text-lg font-bold">
+                                    Total Tuition Fee: ${totalTuition.toFixed(2)}
+                                </div>
+
+                            </div>
+                        )}
+                    </div>
+                </div>
+        
+          </div>
+        );        
+    }
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1562774053-701939374585?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29sbGVnZXxlbnwwfHwwfHx8MA%3D%3D)' }}>
+    <div 
+      className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center" 
+      style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1562774053-701939374585?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29sbGVnZXxlbnwwfHwwfHx8MA%3D%3D)' }}
+    >
       <AuthenticatedLayout
         user={auth.user}
-        header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Kindly fill out the following information</h2>}
+        header={<h2 className=" font-semibold text-xl text-gray-800 leading-tight">Enrollment Page </h2>}
       >
-        <Head title="Enrollment and Personal Info" />
+        <Head title="Enrollment" />
 
-        <div className="max-w-6xl mx-auto p-6 bg-white rounded-md shadow-md font-sans">
-          <h2 className="text-2xl font-bold mb-6">Enrollment Process</h2>
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Academic Year & Term</label>
-                <input
-                  type="text"
-                  name="term"
-                  value={formData.term}
-                  readOnly
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Application Type</label>
-                <select
-                  name="application_type"
-                  value={formData.application_type}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                >
-                  <option value="">- Please select Application type -</option>
-                  <option value="new">New</option>
-                  <option value="transfer">Transfer</option>
-                  <option value="returning">Returning</option>
-                </select>
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Grade / Level</label>
-                <select
-                  name="year"
-                  value={formData.year}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                >
-                  <option value="">- Please select Year Level -</option>
-                  <option value="1st year - Baccalaureate">1st year - Baccalaureate</option>
-                  <option value="2nd year - Baccalaureate">2nd year - Baccalaureate</option>
-                  <option value="3rd year - Baccalaureate">3rd year - Baccalaureate</option>
-                  <option value="4th year - Baccalaureate">4th year - Baccalaureate</option>
-                </select>
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Department</label>
-                <select
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                >
-                  <option value="">- Please select Department -</option>
-                  <option value="CITC">CITC</option>
-                  <option value="CEA">CEA</option>
-                  <option value="CON">CON</option>
-                  {/* Add more departments as needed */}
-                </select>
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Course</label>
-                <select
-                  name="course"
-                  value={formData.course}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                  disabled={!formData.department} // Disable course selection if no department is selected
-                >
-                  <option value="">- Please select Course -</option>
-                  {formData.department && departmentCourses[formData.department].map((course, index) => (
-                    <option key={index} value={course}>{course}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+        <div className=" mx-auto p-6 bg-white rounded-md shadow-md font-sans">
 
-            <h2 className="text-2xl font-bold mb-6">Personal Information</h2>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">First Name</label>
-                <input
-                  name="first_name"
-                  value={formData.first_name}
-                  onChange={handleChange}
-                  readOnly
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Last Name</label>
-                <input
-                  name="last_name"
-                  value={formData.last_name}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input
-                  type="date"
-                  name="date_of_birth"
-                  value={formData.date_of_birth}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Nationality</label>
-                <input
-                  name="nationality"
-                  value={formData.nationality}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Civil Status</label>
-                <select
-                  name="civil_status"
-                  value={formData.civil_status}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                >
-                  <option value="">- Please select Civil Status -</option>
-                  <option value="Single">Single</option>
-                  <option value="Married">Married</option>
-                  <option value="Separated">Separated</option>
-                  <option value="Widow">Widow</option>
-                </select>
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Gender</label>
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                >
-                  <option value="">- Please select Gender -</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
-                </select>
-              </div>
-            </div>
-
-            <h2 className="text-2xl font-bold mb-6">Address</h2>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-1">
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">House No, Street Address</label>
-                <input
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Province</label>
-                <input
-                  name="province"
-                  value={formData.province}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Region</label>
-                <input
-                  name="region"
-                  value={formData.region}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Barangay</label>
-                <input
-                  name="barangay"
-                  value={formData.barangay}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-            </div>
-
-            <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Religion</label>
-                <select
-                  name="religion"
-                  value={formData.religion}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                >
-                  <option value="">- Please select Religion -</option>
-                  <option value="Roman Catholic">Roman Catholic</option>
-                  <option value="Islam">Islam</option>
-                  <option value="INC">INC</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
-                <input
-                  name="mobile_number"
-                  value={formData.mobile_number}
-                  onChange={handleChange}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <input
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  readOnly
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-between mt-6">
-              <button
-                type="button"
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-                onClick={() => {
-                  window.history.back();
-                }}
+          <h1 className="text-2xl font-bold mb-6">User Details:  </h1>
+          {message && <p className="text-red-500 mb-4">{message}</p>}
+          {enrollment ? (
+            <div className="space-y-4">
+              {renderStepContent(step)}
+              <div className="flex justify-between mt-4">
+                {step > 1 && (
+                  <button
+                    onClick={prevStep}
+                    className="px-4 py-2 bg-gray-300 text-black rounded-md"
+                  >
+                    Back
+                  </button>
+                )}
+                {step < 2 && (
+                  <button
+                    onClick={nextStep}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                  >
+                    Next
+                  </button>
+                )}
+                {step == 2 && (
+                  <button
+                  onClick={saveEnrollment}
+                  className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
               >
-                Back
+                  Enroll
               </button>
-              <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit</button>
+                )}
+              </div>
             </div>
-          </form>
+          ) : (
+            !message && <p className="text-gray-500">Loading enrollment data...</p>
+          )}
         </div>
       </AuthenticatedLayout>
     </div>

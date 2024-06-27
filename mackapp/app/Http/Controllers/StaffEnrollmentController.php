@@ -39,7 +39,7 @@ class StaffEnrollmentController extends Controller
             'email' => 'required|email|max:255',
             'status' => 'required|string|max:255',
             'section' => 'required|string|max:255',
-        
+            'enrollmentstatus' => 'required|string|max:255',
         ]);
 
         $enrollment = Enrollment::findOrFail($id);

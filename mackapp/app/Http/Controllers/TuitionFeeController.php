@@ -10,8 +10,19 @@ class TuitionFeeController extends Controller
 {
     public function index()
     {
-        // Fetch all tuition fees with their related enrollments
-        $tuitionFees = TuitionFee::with('enrollment')->get();
+        $tuitionFees = TuitionFee::with('enrollment:id,first_name,last_name')->get();
+
+        $tuitionFees = $tuitionFees->map(function ($fee) {
+            return [
+                'id' => $fee->id,
+                'user_id' => $fee->user_id,
+                'enrollment_id' => $fee->enrollment_id,
+                'first_name' => $fee->enrollment->first_name,
+                'last_name' => $fee->enrollment->last_name,
+                'tuition_fee' => $fee->tuition_fee,
+            ];
+        });
+
         return response()->json($tuitionFees);
     }
 
@@ -19,12 +30,13 @@ class TuitionFeeController extends Controller
     {
         $request->validate([
             'tuition_fee' => 'required|numeric',
+            'enrollment_id' => 'required|exists:enrollments,id',
         ]);
 
         $tuitionFee = TuitionFee::create([
             'user_id' => Auth::id(),
             'tuition_fee' => $request->tuition_fee,
-            'enrollment_id' => $request->enrollment_id, // Assuming enrollment_id is also passed
+            'enrollment_id' => $request->enrollment_id,
         ]);
 
         return response()->json(['message' => 'Tuition fee saved successfully!', 'tuition_fee' => $tuitionFee], 201);

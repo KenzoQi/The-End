@@ -9,7 +9,7 @@ class CourseController extends Controller
     public function index()
     {
         // You can pass data to the view if needed
-        return inertia('Courses', [
+        return inertia('Course', [
             'data' => 'This is the enrollment page',
         ]);
     }

@@ -55,12 +55,53 @@ class EnrollmentController extends Controller
     $tuitionFee->save();
 
     // Update enrollment status to 'Accepted' or another appropriate status
-    $enrollment->status = 'Pending'; 
+    $enrollment->enrollmentstatus = 'To Pay'; 
     $enrollment->save();
 
     return response()->json(['message' => 'Enrollment saved successfully.']);
 }
 
-    
 
+public function getUserEnrollment()
+{
+    $user = Auth::user();
+    $enrollment = Enrollment::where('user_id', $user->id)->first();
+
+    if ($enrollment) {
+        if ($enrollment->status === 'Accepted' && $enrollment->enrollmentstatus === 'Not Enrolled') {
+            return response()->json(['status' => 'Accepted','enrollmentstatus' => 'Not Enrolled', 'enrollment' => $enrollment]);
+
+        } elseif ($enrollment->status === 'Accepted' && $enrollment->enrollmentstatus === 'To Pay') {
+            return response()->json(['status' => 'Enrolled', 'message' => 'Please pay your fee for the Current enrollment']);
+
+        } elseif($enrollment->status === 'Accepted' && $enrollment->enrollmentstatus === 'Paid') {
+            return response()->json(['status' => 'Enrolled', 'message' => 'You Are now Enrolled <3']);
+            
+        } elseif ($enrollment->status === 'Rejected') {
+            return response()->json(['status' => 'Rejected', 'message' => 'Rejected, Pangita nag lain skwelahan sorry']);
+        } else {
+            return response()->json(['status' => 'For Approval', 'message' => 'You cannot view this page, Please wait for your application to be accepted']);
+        }
+ 
+    } else {
+        return response()->json(['status' => 'None', 'message' => 'Sorry your Enrollment has been rejected'], 404);
+    }
 }
+
+
+    public function getEnrollmentStatus()
+    {
+        $user = Auth::user();
+        $enrollment = Enrollment::where('user_id', $user->id)->first();
+
+        if (!$enrollment) {
+            return response()->json(['status' => 'Not Found'], 404);
+        }
+
+        return response()->json(['status' => $enrollment->status]);
+    }
+
+
+    
+}
+

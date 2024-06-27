@@ -5,14 +5,12 @@ use App\Http\Controllers\SeeTuitionController;
 use App\Http\Controllers\StudentsController; 
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\EnrollmentFormController;
-use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PDFController;
-
 
 // Define the route for the welcome page
 Route::get('/', function () {
@@ -36,6 +34,8 @@ Route::get('/dashboard/department', [DepartmentController::class, 'index'])
 // Define the route for the students page
 Route::get('/dashboard/students_view', [StudentsController::class, 'index'])->name('students_view');
 Route::get('/dashboard/students_profile', [StudentsController::class, 'index'])->name('students_profile');
+
+
 
 
 // Define the route for the users page
@@ -78,8 +78,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/enroll', [EnrollmentController::class, 'showEnrollmentForm'])->name('enroll.form');
 });
-
-
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/enroll', [EnrollmentController::class, 'index'])->name('enrollment.index');
@@ -191,9 +189,33 @@ Route::get('/enrollments/not-saved', [FetchEnrollmentController::class, 'getNotS
 
 Route::post('/enrollments/{id}/save', [EnrollmentController::class, 'save']);
 
+
+
+
+
+
+
+
+
+
+
+
+//revyyy    
 use App\Http\Controllers\AdmissionController;
 
 Route::get('/admission', [AdmissionController::class, 'index'])->name('admission');
-Route::post('/check-duplicate', 'AdmissionController@checkDuplicate');
+
+use App\Http\Controllers\CourseController;
+
+Route::get('/courses', [CourseController::class, 'index'])->name('courses');
+
+use App\Http\Controllers\AdmissionStatusController;
+
+Route::get('/admissionstatus', [AdmissionStatusController::class, 'index'])->name('admissionstatus');
+
+
+
+Route::middleware('auth')->get('/user-enrollment', [EnrollmentController::class, 'getUserEnrollment']);
+
 
 

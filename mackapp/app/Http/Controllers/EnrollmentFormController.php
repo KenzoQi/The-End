@@ -30,6 +30,7 @@ class EnrollmentFormController extends Controller
             'mobile_number' => 'required|string',
             'email' => 'required|string|email',
             'totalfees' => 'numeric', // Add this line
+            'enrollmentstatus' => 'numeric',
         ]);
 
         // Create Enrollment

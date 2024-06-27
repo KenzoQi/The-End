@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { Link, Head } from '@inertiajs/react';
+
 import MU from '/src/MU.png'; 
 import MU2 from '/src/Img/MU2.jpg';
 import MU3 from '/src/Img/MU3.jpg'; 
 import MU4 from '/src/Img/MU4.jpg'; 
+import { Link, Head, usePage } from '@inertiajs/react';
 
 // Define routes for testing purposes
 const routes = {
     login: '/login', 
     register: '/register', 
     dashboardEnrollment: '/dashboard/enrollment',
-    applyNow: '/admission' // New route for Apply Now button
+    applyNow: '/register'
 };
 
 export default function Welcome({ auth }) {
@@ -58,7 +59,7 @@ export default function Welcome({ auth }) {
                             </Link>
                             <Link
                                 href={routes.register}
-                                className="btn-secondary bg-transparent border-2 border-white text-white font-semibold py-2 px-4 rounded-full shadow-lg hover:bg-white hover:text-blue-500 transition duration-300"
+                                className="btn-secondary bg-transparent border-2 border-white text-white font-semibold py-2 px-4 rounded-full shadow-lg hover:bg-white hover:text-blue-500 transition duration-300 hidden"
                             >
                                 Register
                             </Link>
@@ -78,8 +79,46 @@ export default function Welcome({ auth }) {
                     >
                         Apply Now
                     </Link>
+                    <tr>
+                        <td>
+                            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-black transform hover:scale-105 transition duration-300 mt-12">
+                                <h2 className="text-2xl font-bold mb-4">Admission Process</h2>
+                                <p className="mb-4">Follow these steps to complete your admission:</p>
+                                <ul className="list-disc list-inside mb-4 space-y-2">
+                                    <li>Register an account</li>
+                                    <li>Click the Register Button</li>
+                                    <li>Fill up the Admission Requirements</li>
+                                    <li>Click the Submit Button</li>
+                                    <li>Wait for Admission Acceptance and You can go to the dashboard</li>
 
+
+
+
+                                </ul>
+                            </div>
+                        </td>
+                        <td>
+                        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-black transform hover:scale-105 transition duration-300 mt-12">
+                                <h2 className="text-2xl font-bold mb-4">Enrollment Process</h2>
+                                <p className="mb-4">Follow these steps to complete your enrollment:</p>
+                                <ul className="list-disc list-inside mb-4 space-y-2">
+                                    <li>After obtaining accepted status</li>
+                                    <li>Click Enrollment Process</li>
+                                    <li>Review subjects</li>
+                                    <li>Enroll</li>
+                                    <li>Pay the Enrollment Fee</li>
+                                    <li>Wait for Enrollment confirmation</li>
+                                </ul>
+                            </div>
+
+                        </td>
+                    </tr>
+                    
+                    
+
+                
                 </div>
+                
             </div>
 
             {/* Rest of your content */}

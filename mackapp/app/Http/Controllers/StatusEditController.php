@@ -15,3 +15,5 @@ class StatusEditController extends Controller
         return response()->json(['message' => 'Enrollment status updated successfully'], 200);
     }
 }
+
+

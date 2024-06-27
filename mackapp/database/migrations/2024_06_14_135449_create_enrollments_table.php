@@ -36,6 +36,7 @@ class CreateEnrollmentsTable extends Migration
             $table->string('email');
             $table->string('status');
             $table->string('section');
+            $table->string('enrollmentstatus');
             $table->timestamps();
         });
     }

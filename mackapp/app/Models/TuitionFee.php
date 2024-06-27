@@ -9,11 +9,8 @@ class TuitionFee extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'enrollment_id','tuition_fee'];
+    protected $fillable = ['user_id', 'enrollment_id', 'tuition_fee'];
 
-    /**
-     * Get the enrollment associated with the tuition fee.
-     */
     public function enrollment()
     {
         return $this->belongsTo(Enrollment::class);

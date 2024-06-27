@@ -10,7 +10,7 @@ class Enrollment extends Model
     protected $fillable = [
         'user_id', 'term', 'application_type', 'year', 'department', 'course', 'first_name',
         'last_name', 'date_of_birth', 'nationality', 'civil_status', 'gender', 'address',
-        'province', 'region', 'barangay', 'religion', 'mobile_number', 'email','status','section',
+        'province', 'region', 'barangay', 'religion', 'mobile_number', 'email','status','section','enrollmentstatus',
     ];
 
      public function tuitionFees()

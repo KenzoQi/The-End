@@ -29,25 +29,19 @@ export default function Login({ status, canResetPassword }) {
         window.location.href = route('welcome');
     };
 
-    
-
     return (
         <GuestLayout>
             <Head title="Log in" />
 
-            
             <Link href="/" className="absolute top-0 right-0 mt-7 mr-4">
-                    <button type="button" className="text-4xl">&times;</button>
-                </Link>
-
+                <button type="button" className="text-4xl">&times;</button>
+            </Link>
 
             <div className="flex justify-center mb-6">
                 <img src="/MU%20logo.png" alt="Logo" className="h-20 w-20 transition-transform transform hover:scale-110" />
             </div>
 
-            <div className="relative bg-white shadow-lg rounded-lg p-8 max-w-xl w-full" style={{ minHeight: '400px' }}>
-               
-
+            <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white bg-opacity-0 shadow-md overflow-hidden sm:rounded-lg">
                 <h2 className="text-2xl font-bold mb-6 text-center">Log in</h2>
 
                 {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
@@ -55,7 +49,6 @@ export default function Login({ status, canResetPassword }) {
                 <form onSubmit={submit}>
                     <div className="mb-4">
                         <InputLabel htmlFor="email" value="Email" className="text-gray-700" />
-
                         <TextInput
                             id="email"
                             type="email"
@@ -66,13 +59,11 @@ export default function Login({ status, canResetPassword }) {
                             isFocused={true}
                             onChange={(e) => setData('email', e.target.value)}
                         />
-
                         <InputError message={errors.email} className="mt-2 text-red-600" />
                     </div>
 
                     <div className="mb-4">
                         <InputLabel htmlFor="password" value="Password" className="text-gray-700" />
-
                         <TextInput
                             id="password"
                             type="password"
@@ -82,7 +73,6 @@ export default function Login({ status, canResetPassword }) {
                             autoComplete="current-password"
                             onChange={(e) => setData('password', e.target.value)}
                         />
-
                         <InputError message={errors.password} className="mt-2 text-red-600" />
                     </div>
 

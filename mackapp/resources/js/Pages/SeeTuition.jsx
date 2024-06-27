@@ -6,15 +6,11 @@ import axios from 'axios';
 const SeeTuition = () => {
     const { auth } = usePage().props;
     const [tuitionFees, setTuitionFees] = useState([]);
-    const [tuitionFee, setTuitionFee] = useState('');
-    const [enrollmentId, setEnrollmentId] = useState('');
-    const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(true);
 
-
-    const navigateTostaffdashboard = () => {
+    const navigateToStaffDashboard = () => {
         window.location.href = '/staffdashboard';
-      };  
+    };
 
     useEffect(() => {
         if (auth.id === 2) {
@@ -30,7 +26,6 @@ const SeeTuition = () => {
         }
     }, [auth.id]);
 
-  
     if (auth.id !== 2) {
         return (
             <AuthenticatedLayout>
@@ -48,13 +43,11 @@ const SeeTuition = () => {
                 <h1 className="text-2xl font-bold mb-4">Tuition</h1>
                 <p className="mb-6">Welcome to the Tuition page.</p>
                 <button
-                  className=" text-gray-800 bg-white py-1 px-3 rounded hover:bg-gray-200"
-                  onClick={navigateTostaffdashboard}
+                  className="text-gray-800 bg-white py-1 px-3 rounded hover:bg-gray-200"
+                  onClick={navigateToStaffDashboard}
                 >
                   Back
                 </button>
-                {message && <p className="text-green-500 mb-4">{message}</p>}
-                
                 
                 {loading ? (
                     <div className="text-center py-6">
@@ -68,6 +61,8 @@ const SeeTuition = () => {
                                     <th className="py-3 px-4 border-b border-gray-200 text-left text-sm font-semibold text-gray-600">ID</th>
                                     <th className="py-3 px-4 border-b border-gray-200 text-left text-sm font-semibold text-gray-600">User ID</th>
                                     <th className="py-3 px-4 border-b border-gray-200 text-left text-sm font-semibold text-gray-600">Enrollment ID</th>
+                                    <th className="py-3 px-4 border-b border-gray-200 text-left text-sm font-semibold text-gray-600">First Name</th>
+                                    <th className="py-3 px-4 border-b border-gray-200 text-left text-sm font-semibold text-gray-600">Last Name</th>
                                     <th className="py-3 px-4 border-b border-gray-200 text-left text-sm font-semibold text-gray-600">Tuition Fee</th>
                                 </tr>
                             </thead>
@@ -77,6 +72,8 @@ const SeeTuition = () => {
                                         <td className="py-3 px-4 border-b border-gray-200">{fee.id}</td>
                                         <td className="py-3 px-4 border-b border-gray-200">{fee.user_id}</td>
                                         <td className="py-3 px-4 border-b border-gray-200">{fee.enrollment_id}</td>
+                                        <td className="py-3 px-4 border-b border-gray-200">{fee.first_name}</td>
+                                        <td className="py-3 px-4 border-b border-gray-200">{fee.last_name}</td>
                                         <td className="py-3 px-4 border-b border-gray-200">{fee.tuition_fee}</td>
                                     </tr>
                                 ))}

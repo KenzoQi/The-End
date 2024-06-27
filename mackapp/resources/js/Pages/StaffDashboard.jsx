@@ -26,8 +26,8 @@ const StaffDashboard = () => {
         mobile_number: '',	
         email: '',	
         status: '',	
-        section: ''
-
+        section: '',
+        enrollmentstatus: ''	
     });
     const { data, setData, put, processing } = useForm({
         term: '',
@@ -49,7 +49,8 @@ const StaffDashboard = () => {
         mobile_number: '',	
         email: '',	
         status: '',	
-        section: ''
+        section: '',
+        enrollmentstatus: ''	
     });
 
     const departmentCourses = {
@@ -96,6 +97,7 @@ const StaffDashboard = () => {
             mobile_number: enrollment.mobile_number,	
             email: enrollment.email,	
             status: enrollment.status,	
+            enrollmentstatus: enrollment.enrollmentstatus,	
             section: enrollment.section ,
         });
     };
@@ -109,6 +111,21 @@ const StaffDashboard = () => {
         switch (section) {
             case 'TBD':
                 return 'text-orange-300';
+            default:
+                return '';
+        }
+    };
+
+    const getEStatusClass = (enrollmentstatus) => {
+        switch (enrollmentstatus) {
+            case 'Not Enrolled':
+                return 'text-orange-500';
+            case 'To pay':
+                return 'text-blue-500';
+            case 'Enrolled':
+                return 'text-green-500';
+            case 'To Pay':
+                return 'text-red-500';
             default:
                 return '';
         }
@@ -160,7 +177,7 @@ const StaffDashboard = () => {
         );
     });
 
-    if (auth.user.id !== 2) {
+    if (auth.user.id > 2) {
         return (
             <AuthenticatedLayout>
                 <div className="p-6">
@@ -348,7 +365,11 @@ const StaffDashboard = () => {
                                         <th className="px-4 py-2 bg-gray-200">Barangay</th>
                                         <th className="px-4 py-2 bg-gray-200">Religion</th>
                                         <th className="px-4 py-2 bg-gray-200">Mobile #</th>
-                                        <th className="px-4 py-2 bg-gray-200">Status</th>
+                                        <th className="px-4 py-2 bg-gray-200">Application Status</th>
+                                        <th className="px-4 py-2 bg-gray-200">Enrollment Status</th>
+                                        <th className="px-4 py-2 bg-gray-200">Birth Cert</th>
+                                        <th className="px-4 py-2 bg-gray-200">Form 138</th>
+                                        <th className="px-4 py-2 bg-gray-200">Good Moral Cert</th>
                                         <th className="px-4 py-2 bg-gray-200">Section</th>
                                         <th className="px-4 py-2 bg-gray-200">Email</th>
                                         <th className="px-4 py-2 bg-gray-200">Actions</th>
@@ -376,6 +397,10 @@ const StaffDashboard = () => {
                                             <td className="border px-4 py-2">{enrollment.religion}</td>
                                             <td className="border px-4 py-2">{enrollment.mobile_number}</td>
                                             <td className={`py-2 px-4 border-b ${getStatusClass(enrollment.status)}`}>{enrollment.status}</td>
+                                            <td className={`py-2 px-4 border-b ${getEStatusClass(enrollment.enrollmentstatus)}`}>{enrollment.enrollmentstatus}</td>
+                                            <td className="border px-4 py-2">{enrollment.regionn}</td>
+                                            <td className="border px-4 py-2">{enrollment.regionn}</td>
+                                            <td className="border px-4 py-2">{enrollment.regionn}</td>
                                             <td className={`py-2 px-4 border-b ${getSectionClass(enrollment.section)}`}>{enrollment.section}</td>
                                             <td className="border px-4 py-2">{enrollment.email}</td>
                                             <td className="border px-4 py-2">
@@ -655,9 +680,25 @@ const StaffDashboard = () => {
                                         onChange={handleChange}
                                         className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                     >
-                                        <option value="Pending">Pending</option>
+                                        <option value="For Approval">For Approval</option>
                                         <option value="Accepted">Accepted</option>
                                         <option value="Rejected">Rejected</option>
+                                      
+                                    </select>
+                                </div>
+                                <div className="flex flex-col">
+                                    <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+                                        Enrollment Status
+                                    </label>
+                                    <select
+                                        name="enrollmentstatus"
+                                        value={data.enrollmentstatus}
+                                        onChange={handleChange}
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="To Pay">To Pay</option>
+                                        <option value="Paid">Paid</option>
+                                        <option value="Not Enrolled">Not Enrolled</option>
                                       
                                     </select>
                                 </div>

@@ -1,48 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGraduationCap, faRightToBracket, faBook } from '@fortawesome/free-solid-svg-icons';
+import { faGraduationCap, faCircleInfo,faRightToBracket, faBook } from '@fortawesome/free-solid-svg-icons';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-
-const courses = [
-  {
-    id: 1,
-    title: "Information Technology",
-    image: "https://i0.wp.com/www.gniotgroup.edu.in/blog/wp-content/uploads/2024/04/Information-Technology-1-1024x462-1.webp?resize=640%2C289&ssl=1",
-    description: "Information Technology (IT) is a field that encompasses the use of computers, networks, software, and other technology to manage and process information.",
-    details: "It focuses on the practical application of technology to support various sectors such as business, healthcare, education, government, and more."
-  },
-  {
-    id: 2,
-    title: "Engineering",
-    image: "https://cdn.shopify.com/s/files/1/0306/6419/6141/articles/Untitled_design.png?v=1657832281",
-    description: "Engineering is a discipline that applies scientific principles and mathematical methods to design, develop, and analyze technological solutions to practical problems.",
-    details: "It encompasses a wide range of specialized fields and plays a crucial role in shaping the modern world."
-  },
-  {
-    id: 3,
-    title: "Nursing",
-    image: "https://cdn.britannica.com/18/192118-050-4A517482/nurse-doctor-hospital-patient-MRI.jpg",
-    description: "Nursing is a healthcare profession dedicated to caring for individuals, families, and communities to achieve and maintain optimal health and well-being.",
-    details: "Nurses play a critical role in patient care, health education, and advocacy within the healthcare system."
-  },
-  {
-    id: 4,
-    title: "Architecture",
-    image: "https://barker-associates.b-cdn.net/wp-content/uploads/2022/02/Architecture-and-Design-.jpg.webp",
-    description: "Architecture is the art and science of designing and constructing buildings.",
-    details: "Architects create plans and designs for structures that are both functional and aesthetically pleasing."
-  },
-  {
-    id: 5,
-    title: "Computer Science",
-    image: "https://www.mtu.edu/cs/what/images/what-is-computer-science-banner1600.jpg",
-    description: "Computer Science is the study of computers and computational systems.",
-    details: "It involves the understanding of software, algorithms, programming languages, and the hardware of computers."
-  },
-];
 
 const Dashboard = ({ auth }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -130,7 +92,18 @@ const Dashboard = ({ auth }) => {
             <h2 className="text-2xl font-semibold mb-4">Navigation</h2>
             <nav>
               <ul>
-
+              <li className="mb-2">
+                  <button
+                    className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'EnrollmentStatus' ? 'bg-green-900' : ''}`}
+                    onClick={() => {
+                      setActiveItem('EnrollmentStatus');
+                      navigateTo('/admissionstatus');
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faCircleInfo} className="mr-2" />
+                    Admission Status
+                  </button>
+                </li>
                 <li className="mb-2">
                   <button
                     className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'EnrollmentProcess' ? 'bg-green-900' : ''}`}
@@ -153,30 +126,6 @@ const Dashboard = ({ auth }) => {
                   >
                     <FontAwesomeIcon icon={faRightToBracket} className="mr-2" />
                     Enrollment Review
-                  </button>
-                </li>
-                <li className="mb-2">
-                  <button
-                    className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'EnrollmentStatus' ? 'bg-green-900' : ''}`}
-                    onClick={() => {
-                      setActiveItem('EnrollmentStatus');
-                      navigateTo('/status');
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faRightToBracket} className="mr-2" />
-                    Enrollment Status
-                  </button>
-                </li>
-                <li className="mb-2">
-                  <button
-                    className={`flex items-center text-lg p-2 rounded hover:bg-green-700 w-full text-left ${activeItem === 'Courses' ? 'bg-green-900' : ''}`}
-                    onClick={() => {
-                      setActiveItem('Courses');
-                      setShowCourses(!showCourses);
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faBook} className="mr-2" />
-                    Courses
                   </button>
                 </li>
               </ul>
@@ -202,22 +151,22 @@ const Dashboard = ({ auth }) => {
 
           {activeItem === 'EnrollmentProcess' && (
             <div>
-              <h1 className="text-3xl font-semibold mb-4 text-white">Enrollment Process</h1>
-              <p className="text-lg text-white">This is the enrollment process section...</p>
+              <h1 className="text-3xl font-semibold mb-4 text-white"></h1>
+              <p className="text-lg text-white"></p>
             </div>
           )}
 
           {activeItem === 'EnrollmentReview' && (
             <div>
-              <h1 className="text-3xl font-semibold mb-4 text-white">Enrollment Review</h1>
-              <p className="text-lg text-white">This is the enrollment review section...</p>
+              <h1 className="text-3xl font-semibold mb-4 text-white"></h1>
+              <p className="text-lg text-white"></p>
             </div>
           )}
 
           {activeItem === 'EnrollmentStatus' && (
             <div>
-              <h1 className="text-3xl font-semibold mb-4 text-white">Enrollment Status</h1>
-              <p className="text-lg text-white">This is the enrollment status section...</p>
+              <h1 className="text-3xl font-semibold mb-4 text-white"></h1>
+              <p className="text-lg text-white"></p>
             </div>
           )}
 
